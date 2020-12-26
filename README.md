@@ -28,7 +28,7 @@ sudo cp /usr/src/linux-headers-$(uname -r)/Module.symvers .
 
 PS: customize your kernel config using ./scripts/config (-e enable, -d disable) 
 ```bash
-cd <linux-kernel-sources>
+cd linux-source-5.4.0
 ./scripts/config \
 -e DEBUG_INFO \
 -e GDB_SCRIPTS 
@@ -45,21 +45,32 @@ make -j8
 ## Create virtual machine  
 
 - Create dummy initramfs (just for booting)
-- Boot qemu with kernel specialized parameters 
+- Boot qemu with minimal kernel image (an stop before entering kernel executable)
 
 ```bash
 mkinitramfs -o ramdisk.img
 qemu-system-x86_64 \
-  -kernel arch/x86_64/boot/bzImage \
+  -kernel ./linux-source-5.4.0/arch/x86_64/boot/bzImage \
   -nographic \
   -append "console=ttyS0 nokaslr" \
   -initrd ramdisk.img \
   -m 512 \
   --enable-kvm \
   -cpu host \
-  -s -S &
+  -s -S
 ```
 
+- Attach to kernel process with gdb remotely
+- Set first hardware breakpoint to kernel entry function
+- Some fun hacking the kernel 
+
+```bash
+gdb vmlinux
+target remote :1234
+hbreak start_kernel
+c
+lx-dmesg
+```
 
 
 
