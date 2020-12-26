@@ -1,2 +1,2 @@
-linux-source*
-ramdisk.img
+/kernel
+/userspace
