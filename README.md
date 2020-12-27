@@ -110,14 +110,14 @@ make -j8
 - Boot qemu with minimal kernel image (an stop before entering kernel executable)
 
 ```bash
-qemu-system-x86_64 \                                                                                                                                     
+qemu-system-x86_64 \
   -kernel kernel/arch/x86_64/boot/bzImage \
   -initrd userspace/initramfs-busybox-x86.cpio.gz \
   -m 1024 \
   -nographic \
   -append "console=ttyS0 nokaslr" \
   -enable-kvm \
-  -cpu host \  
+  -cpu host \
   -s -S
 ```
 
