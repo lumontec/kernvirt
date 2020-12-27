@@ -9,3 +9,4 @@ qemu-system-x86_64 \
   -append "console=ttyS0 nokaslr" \
   -enable-kvm \
   -cpu host \
+  -s -S

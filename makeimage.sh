@@ -3,14 +3,17 @@
 # Sets the WSP to actual WORKSPACE PATH
 WSP=$(pwd)
 
+# Remove previous kernvirt-container
+docker container rm kernvirt-container 2> /dev/null
+
 # Remove previous kernvirt image
-docker rmi kernvirt 2> /dev/null
+#docker rmi kernvirt 2> /dev/null
 
 # Build the docker image
 docker build -t kernvirt $WSP/rootfs
 
 # Create the container if not exists
-docker start kernvirt-container || docker run --name kernvirt-container kernvirt
+docker start kernvirt-container 2> /dev/null || docker run --name kernvirt-container kernvirt
 
 # Clean eventual /build/kernvirt directory
 rm -rf $WSP/build
