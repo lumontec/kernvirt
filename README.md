@@ -48,6 +48,19 @@ Compile with the maximum supported cores (will take a while) inside obj folder
 make -j8
 ```
 
+### Play with arm64 kernel
+
+```bash
+cd ./linux
+make distclean
+# Gernerate arm64 specific default config
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make defconfig
+# Compile arm64 compressed image
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j8 Image
+```
+
+
+
 ## Create virtual machine  
 
 - Boot qemu with minimal kernel image (an stop before entering kernel executable)
