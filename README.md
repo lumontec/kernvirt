@@ -27,6 +27,15 @@ git checkout v5.4
 
 ### Play with x86 kernel
 
+
+Configure a fresh default kernel
+```bash
+cd ./linux
+make distclean
+make defconfig 
+```
+
+Or replicate currently installed host kernel
 ```bash
 cd ./linux
 make distclean
@@ -93,7 +102,8 @@ qemu-system-aarch64 \
   -nographic \
   -serial mon:stdio \
   -append "rw console=ttyAMA0 loglevel=8 rootwait fsck.repair=yes memtest=1" \
-  -no-reboot
+  -no-reboot \
+  -s -S
 ```
 
 ## Attach gdb debugging
