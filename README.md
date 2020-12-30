@@ -6,75 +6,15 @@ The aim of this project is to automate kernel and user virtualization for person
 [https://mudongliang.github.io/2017/09/12/how-to-build-a-custom-linux-kernel-for-qemu.html](https://mudongliang.github.io/2017/09/12/how-to-build-a-custom-linux-kernel-for-qemu.html)
 [https://mgalgs.github.io/2015/05/16/how-to-build-a-custom-linux-kernel-for-qemu-2015-edition.html](https://mgalgs.github.io/2015/05/16/how-to-build-a-custom-linux-kernel-for-qemu-2015-edition.html)
 
-## Build userspace
-
-- Clone busybox sources inside ./userspace folder:
-- Checkout busybox version
-- Generate busybox default config 
-
-```bash
-mkdir userspace && cd userspace
-git clone https://github.com/mirror/busybox.git
-cd ./busybox
-git checkout 1_32_0
-make defconfig
-```
-- Edit busybox config as you please (we set static build)
-
-```bash
-CONFIG_STATIC=y
-...
-```
-
-- Compile busybox binary
-- Install on ./_install (default)
-
-```bash
-make -j8
-make install
-```
-
-- Create initramfs folders
-- Copy binaries from busybox installed files
-
-```bash
-mkdir -v ./userspace/initramfs
-cd ./userspace/initramfs
-mkdir -pv {bin,sbin,etc,proc,sys,usr/{bin,sbin}}
-cp -av ../busybox/_install/* .
-```
-
-- Create custom *init* script inside ./userspace/initramfs folder
-
-```bash
-#!/bin/sh
- 
-mount -t proc none /proc
-mount -t sysfs none /sys
- 
-echo -e "\nBoot took $(cut -d' ' -f1 /proc/uptime) seconds\n"
- 
-exec /bin/sh
-```
-
-- Make it executable
-- Generate initramfs archive with cpio inside obj folder
-```bash
-chmod +x init
-find . -print0 \
-    | cpio --null -ov --format=newc \
-    | gzip -9 > ../initramfs-busybox-x86.cpio.gz
-```
-
 
 ## Build the kernel 
 
-- Install pre-requirements 
+- Set up your testing / build system with [https://github.com/lumontec/flashbuild](https://github.com/lumontec/flashbuild)
 - Dowload kernel version you want to hack (from github)
 - Checkout at your desired version (I chose my installed one)
 
 ```bash
-sudo apt install flex bison build-essentials \
+sudo apt install git make gcc device-tree-compiler bison flex libssl-dev libncurses-dev gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu
 git clone https://github.com/torvalds/linux.git \
 cd linux \
 git checkout v5.4
@@ -83,6 +23,9 @@ git checkout v5.4
 - Copy your current kernel config (*optional if yow work from scratch*) 
 - Align sources config with your own old (*optional if yow work from scratch*) 
 - Copy your current kernel symbols (*optional if you work from scratch*) 
+
+
+### Play with x86 kernel
 
 ```bash
 cd ./linux
@@ -109,17 +52,38 @@ make -j8
 
 - Boot qemu with minimal kernel image (an stop before entering kernel executable)
 
+### x86
+
 ```bash
-qemu-system-x86_64 \
-  -kernel kernel/arch/x86_64/boot/bzImage \
-  -initrd userspace/initramfs-busybox-x86.cpio.gz \
-  -m 1024 \
-  -nographic \
+qemu-system-x86_64  \
+  -initrd 3_initramfs/initramfs.cpio.gz \
+  -kernel kernel_src/arch/x86_64/boot/bzImage \
+  -m 2048 \
   -append "console=ttyS0 nokaslr" \
-  -enable-kvm \
+  -nographic \
   -cpu host \
-  -s -S
+  -enable-kvm \
 ```
+
+### arm64
+
+```bash
+#!/bin/bash
+
+qemu-system-aarch64 \
+  -kernel kernel_src/arch/arm64/boot/Image \
+  -initrd 3_initramfs/initramfs.cpio.gz \
+  -m 2048 \
+  -M virt \
+  -cpu cortex-a53 \
+  -smp 8 \
+  -nographic \
+  -serial mon:stdio \
+  -append "rw console=ttyAMA0 loglevel=8 rootwait fsck.repair=yes memtest=1" \
+  -no-reboot
+```
+
+## Attach gdb debugging
 
 - Add vmlinux-gdb debugging scripts to gdbinit (if not present inside ~/.gdbinit)
 - Attach to kernel process with gdb remotely
@@ -134,9 +98,4 @@ hbreak start_kernel
 c
 lx-dmesg
 ```
-
-
-
-
-
 
