@@ -138,3 +138,9 @@ c
 lx-dmesg
 ```
 
+## Example configurations
+
+In the current files: config_<target test> we find minimal kernel .config files used for compiling and testing specific kernel features
+
+
+
