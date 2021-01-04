@@ -25,8 +25,23 @@ git checkout v5.4
 - Copy your current kernel symbols (*optional if you work from scratch*) 
 
 
-### Play with x86 kernel
+### Block the kernel version
 
+Linux kernel will automatically mark your custom built kernel wit a +, to have full control on your version:
+```bash
+touch .scmversion
+# Set localversion inside .config
+#CONFIG_LOCALVERSION="-58-generic"
+vim .config
+# Set other version numbers inside Makefile
+#VERSION = 5
+#PATCHLEVEL = 4
+#SUBLEVEL = 0
+#EXTRAVERSION =
+vim Makefile
+```
+
+### Play with x86 kernel
 
 Configure a fresh default kernel
 ```bash
@@ -39,6 +54,7 @@ Or replicate currently installed host kernel
 ```bash
 cd ./linux
 make distclean
+cp /boot/config-5.4.0-56-generic .config
 make oldconfig (select no on any new driver)
 cp /usr/src/linux-headers-$(uname -r)/Module.symvers .
 ```
