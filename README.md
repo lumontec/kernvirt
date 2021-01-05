@@ -14,7 +14,7 @@ The aim of this project is to automate kernel and user virtualization for person
 - Checkout at your desired version (I chose my installed one)
 
 ```bash
-sudo apt install git make gcc device-tree-compiler bison flex libssl-dev libncurses-dev gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu
+sudo apt install git make gcc device-tree-compiler bison flex libssl-dev libncurses-dev gcc-arm-linux-gnueabi gcc-aarch64-linux-gnu dwarves
 git clone https://github.com/torvalds/linux.git \
 cd linux \
 git checkout v5.4
