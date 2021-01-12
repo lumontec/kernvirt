@@ -48,6 +48,7 @@ Configure a fresh default kernel
 cd ./linux
 make distclean
 make defconfig 
+...
 ```
 
 Or replicate currently installed host kernel
@@ -65,6 +66,7 @@ PS: customize your kernel config using ./scripts/config (-e enable, -d disable)
 ./linux/scripts/config \
 -e DEBUG_INFO \
 -e GDB_SCRIPTS
+...
 ```
 
 Compile with the maximum supported cores (will take a while) inside obj folder

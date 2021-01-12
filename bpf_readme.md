@@ -10,15 +10,27 @@ deb http://cz.archive.ubuntu.com/ubuntu hirsute main universe
 ```
 
 ## Kernel customizations
-./scripts/config \
--e DEBUG_INFO \
--e GDB_SCRIPTS \
--e CONFIG_DEBUG_INFO_BTF \
--e CONFIG_BPF_EVENTS \
--e CONFIG_BPF \
--e CONFIG_BPF_SYSCALL \
--e CONFIG_BPF_JIT \
--e CONFIG_HAVE_EBPF_JIT
+make defconfig && make kvm_guest.config && \
+  scripts/config \
+  -e BPF_SYSCALL \
+  -e BPF_LSM \
+  -e BPF_JIT \
+  -e DEBUG_INFO \
+  -e DEBUG_INFO_BTF \
+  -e FTRACE \
+  -e DYNAMIC_FTRACE \
+  -e FUNCTION_TRACER && \
+  make olddefconfig
+
+scripts/config \
+  -e GDB_SCRIPTS \
+  -e DEBUG_ATOMIC_SLEEP \
+  -e KASAN \
+  -e KMEMLEAK \
+  -e PROVE_LOCKING \
+  -e SECURITYFS \
+  -e IKCONFIG_PROC &&
+  make olddefconfig
 
 PS: keep disabled:
 CONFIG_DEBUG_INFO_SPLIT 
