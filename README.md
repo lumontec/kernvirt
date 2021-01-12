@@ -59,8 +59,9 @@ cp /boot/config-5.4.0-56-generic .config
 make oldconfig (select no on any new driver)
 cp /usr/src/linux-headers-$(uname -r)/Module.symvers .
 ```
-
-PS: customize your kernel config using ./scripts/config (-e enable, -d disable) 
+PS: 
+- for full qemu support ***make kvm_guest.config***
+- customize your kernel config using ./scripts/config (-e enable, -d disable) 
 
 ```bash
 ./linux/scripts/config \
