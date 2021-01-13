@@ -1,4 +1,4 @@
-# Tested on kernel version:  v5.4.0
+# Tested on kernel version:  v5.10.0
 
 ## Bpf testing tips
 - Must compile kernel to include BTF information, refer to bpf_config file
